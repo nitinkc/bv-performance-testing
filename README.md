@@ -86,4 +86,4 @@ Results are stored in `reports/` and can be visualized in Grafana.
 
 - [Gatling Documentation](https://gatling.io/docs/)
 - [k6 Documentation](https://k6.io/docs/)
-- [Performance Testing Best Practices](../../BitVelocity-Docs/docs/03-DEVELOPMENT/performance-testing-guide.md)
+- [Performance Testing Best Practices](../BitVelocity-Docs/docs/03-DEVELOPMENT/performance-testing-guide.md)
