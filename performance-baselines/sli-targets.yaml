@@ -1,0 +1,117 @@
+# Service Level Indicators (SLI) and Targets
+# These define the performance expectations for BitVelocity services
+
+version: "1.0"
+baseline_date: "2025-12-29"
+
+services:
+  order-service:
+    availability_target: 99.0  # 99% uptime (dev baseline)
+    endpoints:
+      - path: "POST /api/v1/orders"
+        latency:
+          p50: 50ms
+          p95: 200ms
+          p99: 500ms
+        throughput: 100  # requests per second
+        error_rate_max: 1.0  # 1%
+      
+      - path: "GET /api/v1/orders/{id}"
+        latency:
+          p50: 20ms
+          p95: 50ms
+          p99: 100ms
+        throughput: 500
+        error_rate_max: 0.5
+
+  product-service:
+    availability_target: 99.5
+    endpoints:
+      - path: "GET /api/v1/products/{id}"
+        latency:
+          p50: 15ms
+          p95: 50ms
+          p99: 100ms
+        throughput: 500
+        error_rate_max: 0.5
+      
+      - path: "GET /api/v1/products"
+        latency:
+          p50: 30ms
+          p95: 100ms
+          p99: 200ms
+        throughput: 200
+        error_rate_max: 1.0
+
+  inventory-service:
+    availability_target: 99.0
+    grpc_methods:
+      - method: "ReserveStock"
+        latency:
+          p50: 30ms
+          p95: 100ms
+          p99: 200ms
+        throughput: 200
+        error_rate_max: 2.0  # Higher tolerance for inventory operations
+      
+      - method: "QueryStock"
+        latency:
+          p50: 10ms
+          p95: 30ms
+          p99: 50ms
+        throughput: 1000
+        error_rate_max: 0.5
+
+  notification-service:
+    availability_target: 95.0  # Lower for non-critical path
+    websocket:
+      connection_latency:
+        p50: 50ms
+        p95: 150ms
+        p99: 300ms
+      message_fan_out:
+        p50: 50ms
+        p95: 150ms
+        p99: 300ms
+      concurrent_connections_target: 10000
+
+data_layer:
+  postgres:
+    query_latency:
+      simple_select:
+        p50: 5ms
+        p95: 20ms
+        p99: 50ms
+      complex_join:
+        p50: 15ms
+        p95: 50ms
+        p99: 100ms
+    connection_pool:
+      utilization_max: 80  # percent
+  
+  redis:
+    operation_latency:
+      get:
+        p50: 1ms
+        p95: 5ms
+        p99: 10ms
+      set:
+        p50: 2ms
+        p95: 10ms
+        p99: 20ms
+    cache_hit_ratio_min: 80  # percent
+
+messaging:
+  kafka:
+    produce_latency:
+      p50: 10ms
+      p95: 50ms
+      p99: 100ms
+    consumer_lag_max: 1000  # messages
+    throughput: 10000  # messages per second
+
+# Notes:
+# - These are INITIAL baselines for a learning project
+# - Production systems would have stricter targets (e.g., 99.9% availability)
+# - Targets should be revisited after initial load tests
+# - Consider business impact when setting SLOs
